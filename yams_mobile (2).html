@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Yams</title>
+<style>
+/* ── RESET & ROOT ── */
+:root {
+  --bg:       #F5F2EB;
+  --surface:  #FDFAF4;
+  --border:   #D9D4C7;
+  --bstrong:  #B8B0A0;
+  --text:     #1A1714;
+  --muted:    #6B6560;
+  --faint:    #A09890;
+  --green:    #2D5A3D;
+  --gbg:      #E8F2EC;
+  --gbd:      #A8C8B4;
+  --purple:   #4A3F8C;
+  --pbg:      #EEEDFE;
+  --pbd:      #9B95D4;
+  --red:      #8B2020;
+  --rbg:      #FCEAEA;
+  --sec:      #EDE9E0;
+  --gold:     #8B6914;
+  --goldbg:   #FBF3DC;
+  --radius:   12px;
+  --cell-h:   52px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; }
+body {
+  font-family: -apple-system, 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 15px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── HEADER ── */
+header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--text);
+  color: #F5F2EB;
+  padding: 14px 16px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.htitle {
+  font-size: 18px;
+  font-weight: 300;
+  letter-spacing: .01em;
+}
+.htitle strong { font-weight: 700; font-style: italic; }
+.hreset {
+  font-size: 13px;
+  padding: 7px 14px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,.25);
+  background: transparent;
+  color: #ffaaaa;
+  cursor: pointer;
+  white-space: nowrap;
+  -webkit-appearance: none;
+}
+.hreset:active { background: rgba(255,80,80,.2); }
+
+/* ── NAMES ── */
+.names-wrap {
+  padding: 14px 14px 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.nfield {
+  width: 100%;
+  text-align: center;
+  font-size: 16px;
+  font-style: italic;
+  font-weight: 300;
+  padding: 10px 8px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+  outline: none;
+  -webkit-appearance: none;
+}
+.nfield:focus { border-color: var(--green); }
+
+/* ── SECTION LABEL ── */
+.sec-label {
+  margin: 16px 14px 6px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* ── SCORE CARD ── */
+.card {
+  margin: 0 14px 6px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+/* Row inside a card */
+.row {
+  display: grid;
+  grid-template-columns: 1fr var(--cell-h) var(--cell-h);
+  min-height: var(--cell-h);
+  border-bottom: 1px solid var(--border);
+  align-items: stretch;
+}
+.row:last-child { border-bottom: none; }
+
+.row-label {
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+}
+.rl-name { font-size: 14px; font-weight: 500; color: var(--text); }
+.rl-hint { font-size: 11px; color: var(--faint); line-height: 1.3; }
+
+/* Score input cell */
+.sc {
+  border-left: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.si {
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  font-size: 17px;
+  font-weight: 600;
+  border: none;
+  background: transparent;
+  color: var(--text);
+  outline: none;
+  -webkit-appearance: none;
+  -moz-appearance: textfield;
+  padding: 0;
+  cursor: pointer;
+}
+.si::-webkit-outer-spin-button,
+.si::-webkit-inner-spin-button { -webkit-appearance: none; }
+.si::placeholder { color: var(--border); font-weight: 400; font-size: 20px; }
+.si:focus {
+  background: var(--gbg);
+  color: var(--green);
+}
+.si.filled {
+  background: var(--pbg);
+  color: var(--purple);
+}
+.si.filled:focus {
+  background: var(--gbg);
+  color: var(--green);
+}
+
+/* ── PLAYER HEADERS inside cards ── */
+.col-heads {
+  display: grid;
+  grid-template-columns: 1fr var(--cell-h) var(--cell-h);
+  margin: 0 14px;
+  margin-bottom: 2px;
+}
+.col-heads span {
+  text-align: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  padding: 4px 2px;
+  letter-spacing: .03em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.col-heads span:first-child { text-align: left; padding-left: 12px; }
+
+/* ── BONUS ROW ── */
+.bonus-row {
+  margin: 0 14px 6px;
+  background: var(--gbg);
+  border: 1px solid var(--gbd);
+  border-radius: var(--radius);
+  display: grid;
+  grid-template-columns: 1fr var(--cell-h) var(--cell-h);
+  min-height: 42px;
+  align-items: center;
+}
+.bonus-label {
+  padding: 8px 12px;
+  font-size: 12px;
+  color: var(--green);
+  font-weight: 500;
+}
+.bonus-val {
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+  border-left: 1px solid var(--gbd);
+  padding: 8px 4px;
+  color: var(--green);
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.bonus-val.ko { color: var(--faint); font-weight: 400; font-size: 11px; }
+
+/* ── TOTAL ROW ── */
+.total-row {
+  margin: 0 14px 6px;
+  background: var(--sec);
+  border: 1px solid var(--bstrong);
+  border-radius: var(--radius);
+  display: grid;
+  grid-template-columns: 1fr var(--cell-h) var(--cell-h);
+  min-height: 44px;
+  align-items: center;
+}
+.total-label {
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+.total-val {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  border-left: 1px solid var(--bstrong);
+  padding: 8px 4px;
+  color: var(--text);
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── FINAL ROW ── */
+.final-row {
+  margin: 0 14px 24px;
+  background: var(--text);
+  border-radius: var(--radius);
+  display: grid;
+  grid-template-columns: 1fr var(--cell-h) var(--cell-h);
+  min-height: 56px;
+  align-items: center;
+  overflow: hidden;
+}
+.final-label {
+  padding: 10px 12px;
+  font-size: 15px;
+  font-weight: 700;
+  font-style: italic;
+  color: #F5F2EB;
+}
+.final-val {
+  text-align: center;
+  font-size: 20px;
+  font-weight: 800;
+  border-left: 1px solid rgba(255,255,255,.15);
+  padding: 10px 4px;
+  color: #F5F2EB;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.final-val.win { color: #A8E6B8; }
+
+/* ── TOAST ── */
+.toast {
+  position: fixed;
+  bottom: max(20px, env(safe-area-inset-bottom, 20px));
+  left: 50%;
+  transform: translateX(-50%) translateY(60px);
+  background: var(--text);
+  color: #F5F2EB;
+  font-size: 13px;
+  padding: 10px 20px;
+  border-radius: 20px;
+  pointer-events: none;
+  opacity: 0;
+  transition: all .25s cubic-bezier(.34,1.56,.64,1);
+  z-index: 999;
+  white-space: nowrap;
+  box-shadow: 0 4px 20px rgba(0,0,0,.25);
+}
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ── SAFE AREA BOTTOM PADDING ── */
+.bottom-pad { height: max(16px, env(safe-area-inset-bottom, 16px)); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="htitle">Fiche — <strong>Yams</strong></div>
+  <button class="hreset" onclick="resetAll()">↺ Nouveau</button>
+</header>
+
+<div class="names-wrap">
+  <input class="nfield" id="n0" type="text" placeholder="Joueur 1"
+    autocomplete="off" autocorrect="off" spellcheck="false"
+    oninput="refreshHeaders()">
+  <input class="nfield" id="n1" type="text" placeholder="Joueur 2"
+    autocomplete="off" autocorrect="off" spellcheck="false"
+    oninput="refreshHeaders()">
+</div>
+
+<div id="app"></div>
+<div class="bottom-pad"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ── CONFIG ─────────────────────────────────── */
+const HAUTE = ['as','deux','trois','quatre','cinq','six'];
+const BASSE  = ['brelan','carre','full','ps','gs','yams','chance'];
+
+const ROWS_H = [
+  {key:'as',     name:'As (1)',       hint:'Somme des 1',              max:5},
+  {key:'deux',   name:'Deux (2)',     hint:'Somme des 2',              max:10},
+  {key:'trois',  name:'Trois (3)',    hint:'Somme des 3',              max:15},
+  {key:'quatre', name:'Quatre (4)',   hint:'Somme des 4',              max:20},
+  {key:'cinq',   name:'Cinq (5)',     hint:'Somme des 5',              max:25},
+  {key:'six',    name:'Six (6)',      hint:'Somme des 6',              max:30},
+];
+const ROWS_B = [
+  {key:'brelan', name:'Brelan',       hint:'3 id. – somme 5 dés',     max:30},
+  {key:'carre',  name:'Carré',        hint:'4 id. – somme 5 dés',     max:30},
+  {key:'full',   name:'Full',         hint:'3+2 id. – 25 pts',        fixed:25},
+  {key:'ps',     name:'Petite suite', hint:'4 consécutifs – 30 pts',  fixed:30},
+  {key:'gs',     name:'Grande suite', hint:'5 consécutifs – 40 pts',  fixed:40},
+  {key:'yams',   name:'Yams',         hint:'5 id. – 50 pts',          fixed:50},
+  {key:'chance', name:'Chance',       hint:'Tout – somme des 5 dés',  max:30},
+];
+
+let scores = [{}, {}];
+
+/* ── HELPERS ─────────────────────────────────── */
+function gn(p){ return document.getElementById('n'+p).value.trim() || 'J'+(p+1); }
+function gv(p,k){ return scores[p][k]; }
+function sum1(p){ return HAUTE.reduce((s,k)=>s+(gv(p,k)??0),0); }
+function bonus(p){ return sum1(p)>=63?35:0; }
+function t1(p){ return sum1(p)+bonus(p); }
+function sum2(p){ return BASSE.reduce((s,k)=>s+(gv(p,k)??0),0); }
+function tf(p){ return t1(p)+sum2(p); }
+
+/* ── BUILD (once) ────────────────────────────── */
+function build(){
+  const app = document.getElementById('app');
+  app.innerHTML = '';
+
+  /* helper: col headers */
+  function colHeads(){
+    const d = document.createElement('div');
+    d.className = 'col-heads';
+    d.innerHTML = `<span></span><span id="ch0">${gn(0)}</span><span id="ch1">${gn(1)}</span>`;
+    return d;
+  }
+
+  /* helper: card of rows */
+  function makeCard(rows){
+    const card = document.createElement('div');
+    card.className = 'card';
+    rows.forEach(row => {
+      const r = document.createElement('div');
+      r.className = 'row';
+      r.innerHTML = `
+        <div class="row-label">
+          <span class="rl-name">${row.name}</span>
+          <span class="rl-hint">${row.hint}</span>
+        </div>
+        ${[0,1].map(p=>`
+          <div class="sc">
+            <input class="si" type="number" inputmode="numeric" pattern="[0-9]*"
+              id="i${p}_${row.key}"
+              min="0" max="${row.fixed??row.max??50}"
+              placeholder="·"
+              oninput="onInput(${p},'${row.key}',this)"
+            >
+          </div>`).join('')}`;
+      card.appendChild(r);
+    });
+    return card;
+  }
+
+  /* Section haute */
+  app.appendChild(colHeads());
+  app.innerHTML += '<div class="sec-label">Section haute</div>';
+  app.appendChild(makeCard(ROWS_H));
+
+  /* Bonus */
+  const bonusEl = document.createElement('div');
+  bonusEl.className = 'bonus-row'; bonusEl.id = 'bonus-row';
+  bonusEl.innerHTML = `
+    <div class="bonus-label">Bonus si section haute ≥ 63 pts (+35)</div>
+    <div class="bonus-val ko" id="bv0">0/63</div>
+    <div class="bonus-val ko" id="bv1">0/63</div>`;
+  app.appendChild(bonusEl);
+
+  /* Total 1 */
+  const t1el = document.createElement('div');
+  t1el.className='total-row';
+  t1el.innerHTML=`<div class="total-label">Total 1</div>
+    <div class="total-val" id="tv10">0</div><div class="total-val" id="tv11">0</div>`;
+  app.appendChild(t1el);
+
+  /* Section basse */
+  const ch2 = colHeads(); app.appendChild(ch2);
+  app.innerHTML += '<div class="sec-label">Section basse</div>';
+  app.appendChild(makeCard(ROWS_B));
+
+  /* Total 2 */
+  const t2el = document.createElement('div');
+  t2el.className='total-row';
+  t2el.innerHTML=`<div class="total-label">Total 2</div>
+    <div class="total-val" id="tv20">0</div><div class="total-val" id="tv21">0</div>`;
+  app.appendChild(t2el);
+
+  /* Total final */
+  const tfel = document.createElement('div');
+  tfel.className='final-row';
+  tfel.innerHTML=`<div class="final-label">Total final</div>
+    <div class="final-val" id="fv0">0</div><div class="final-val" id="fv1">0</div>`;
+  app.appendChild(tfel);
+}
+
+/* ── INPUT HANDLER ───────────────────────────── */
+function onInput(p, key, el){
+  const raw = el.value.trim();
+  if(raw === ''){
+    delete scores[p][key];
+    el.classList.remove('filled');
+  } else {
+    const n = parseInt(raw, 10);
+    if(!isNaN(n) && n >= 0){
+      scores[p][key] = n;
+      el.classList.add('filled');
+    }
+  }
+  refreshTotals();
+}
+
+/* ── REFRESH TOTALS ──────────────────────────── */
+function refreshTotals(){
+  for(let p=0;p<2;p++){
+    const b=bonus(p), s=sum1(p);
+    const bel=document.getElementById('bv'+p);
+    if(bel){
+      bel.textContent = b ? '+35 ✓' : s+'/63';
+      bel.className = 'bonus-val '+(b?'':'ko');
+    }
+    const t1el=document.getElementById('tv1'+p); if(t1el) t1el.textContent=t1(p);
+    const t2el=document.getElementById('tv2'+p); if(t2el) t2el.textContent=sum2(p);
+    const fv0=document.getElementById('fv0'), fv1=document.getElementById('fv1');
+    if(fv0&&fv1){
+      const[f0,f1]=[tf(0),tf(1)];
+      fv0.className='final-val'+(f0>f1?' win':'');
+      fv1.className='final-val'+(f1>f0?' win':'');
+      fv0.textContent=f0+(f0>f1?' ★':'');
+      fv1.textContent=f1+(f1>f0?' ★':'');
+    }
+  }
+}
+
+function refreshHeaders(){
+  ['ch0','ch1'].forEach((id,p)=>{
+    const el=document.getElementById(id);
+    if(el) el.textContent=gn(p);
+  });
+  /* update all ch0/ch1 — there are two col-heads blocks */
+  document.querySelectorAll('.col-heads').forEach(row=>{
+    const spans=row.querySelectorAll('span');
+    if(spans[1]) spans[1].textContent=gn(0);
+    if(spans[2]) spans[2].textContent=gn(1);
+  });
+}
+
+/* ── RESET ───────────────────────────────────── */
+function resetAll(){
+  if(!confirm('Remettre tous les scores à zéro ?')) return;
+  scores=[{},{}];
+  document.querySelectorAll('.si').forEach(el=>{
+    el.value=''; el.classList.remove('filled');
+  });
+  refreshTotals();
+  showToast('Scores remis à zéro');
+}
+
+/* ── TOAST ───────────────────────────────────── */
+let _tt=null;
+function showToast(msg){
+  const el=document.getElementById('toast');
+  el.textContent=msg; el.classList.add('show');
+  clearTimeout(_tt); _tt=setTimeout(()=>el.classList.remove('show'),1800);
+}
+
+/* ── INIT ────────────────────────────────────── */
+build();
+</script>
+</body>
+</html>
